@@ -9,5 +9,12 @@ class Todo {
   String toString() {
     return '$name - ($description) [${complete ? 'Complete' : 'Not Complete'}]';
   }
-}
 
+  Todo copyWith({String? name, String? description, bool? complete}) {
+    return Todo(
+      name: name ?? this.name,
+      description: description ?? this.name,
+      complete: complete ?? this.complete,
+    );
+  }
+}

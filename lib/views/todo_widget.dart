@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tt_flutter_portfolio/models/todo_list.dart';
 import '../models/todo.dart' show Todo;
 
 class TodoWidget extends StatefulWidget {
@@ -28,7 +30,15 @@ class _TodoWidgetState extends State<TodoWidget> {
                 ],
               ),
             ),
-            Checkbox(value: widget.todo.complete, onChanged: (value) {}),
+            Checkbox(
+              value: widget.todo.complete,
+              onChanged: (value) {
+                Provider.of<TodoList>(
+                  context,
+                  listen: false,
+                ).updateTodo(widget.todo.copyWith(complete: value));
+              },
+            ),
           ],
         ),
       ),

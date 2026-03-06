@@ -40,7 +40,10 @@ class TodoList extends ChangeNotifier {
 
   //TODO: Validate the implementation of index of vs the mutability of the todo
   void updateTodo(Todo value) {
-    int index = _todos.indexOf(value);
+    int index = _todos.indexWhere(
+      (t) => t.name.toLowerCase() == value.name.toLowerCase(),
+    );
+
     _todos[index] = value;
 
     notifyListeners();
