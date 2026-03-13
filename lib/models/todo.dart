@@ -38,4 +38,20 @@ class Todo {
       'complete': complete,
     };
   }
+
+  factory Todo.fromMap(Map<String, dynamic> map) {
+    //Assign from bool as priority if it is bool
+    bool? complete = map['complete'] is bool ? map['complete'] : null;
+
+    //otherwise if it is null, check if it is an int and assign based on that value.
+    complete ??= map['complete'] == 1;
+
+    return Todo(
+      id: map['id']
+          .toString(), // If it is an int from the DB, convert to string
+      name: map['name'],
+      description: map['description'],
+      complete: complete,
+    );
+  }
 }

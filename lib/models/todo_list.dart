@@ -2,29 +2,32 @@
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
+import 'package:tt_flutter_portfolio/services/datasource.dart';
+import 'package:get/get.dart';
+
 import './todo.dart';
 
 class TodoList extends ChangeNotifier {
-  final List<Todo> _todos = <Todo>[
-    Todo(
-      name: 'Get Food',
-      description:
-          'Stand in front of fridge for 10 minutes and decide I dont want anything in there',
-    ),
-    Todo(name: 'Solve World Hunger', description: 'Dont use fridge'),
-    Todo(
-      name: 'Catch the Fridge',
-      description: 'We are going to need a bigger boat',
-      complete: true,
-    ),
-  ];
+  final List<Todo> _todos = <Todo>[];
 
   UnmodifiableListView<Todo> get todos => UnmodifiableListView(_todos);
 
   int get todoCount => _todos.length;
+  int get todoCompleteCount =>
+      _todos.where((element) => element.complete).toList().length;
 
-  void addTodo(Todo value) {
-    _todos.add(value);
+  Future<List<Todo>> refresh() async {
+    IDataSource dataSource = Get.find();
+
+    _todos.clear();
+    _todos.addAll(await dataSource.browse());
+    notifyListeners();
+    return _todos;
+  }
+
+  Future addTodo(Todo value) async {
+    IDataSource dataSource = Get.find();
+    await dataSource.add(value);
     notifyListeners();
   }
 

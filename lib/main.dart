@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tt_flutter_portfolio/models/todo_list.dart';
+import 'package:get/get.dart';
+import 'package:tt_flutter_portfolio/services/sql_datasource.dart';
+
+import './services/datasource.dart';
+import './models/todo_list.dart';
 import './views/todo_widget.dart';
 import './models/todo.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => TodoList(),
-      child: const ToDoApp(),
+  WidgetsFlutterBinding.ensureInitialized();
+  Get.putAsync<IDataSource>(() => SqlDatasource.createAsync()).whenComplete(
+    () => runApp(
+      ChangeNotifierProvider(
+        create: (context) => TodoList(),
+        child: const ToDoApp(),
+      ),
     ),
   );
 }
@@ -49,7 +57,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
       ),
       body: Center(
         child: Consumer<TodoList>(
-          builder: (BuildContext context, TodoList stateObject, child) {
+          builder: (BuildContext context, TodoList stateObject, Widget? child) {
             return ListView.builder(
               itemCount: stateObject.todos.length,
               itemBuilder: (context, index) {
@@ -96,10 +104,12 @@ class _TodoHomePageState extends State<TodoHomePage> {
                   setState(() {
                     Provider.of<TodoList>(context, listen: false).addTodo(
                       Todo(
+                        id: 'This is removed and will be created automatically by the DB',
                         name: _controllerName.text,
                         description: _controllerDescription.text,
                       ),
                     );
+                    Provider.of<TodoList>(context, listen: false).refresh();
                   });
                   Navigator.pop(context);
                   _controllerDescription.clear();

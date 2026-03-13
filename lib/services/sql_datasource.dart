@@ -25,15 +25,19 @@ class SqlDatasource implements IDataSource {
   }
 
   @override
-  Future<bool> add(Todo todo) {
-    // TODO: implement add
-    throw UnimplementedError();
+  Future<bool> add(Todo todo) async {
+    Map<String, dynamic> editedMap = todo.toMap();
+    editedMap.remove('id'); //edited map now has the id removed
+
+    return await _database.insert('todos', editedMap) != 0;
   }
 
   @override
-  Future<List<Todo>> browse() {
-    // TODO: implement browse
-    throw UnimplementedError();
+  Future<List<Todo>> browse() async {
+    List<Map<String, dynamic>> maps = await _database.query('todos');
+    return List.generate(maps.length, (index) {
+      return Todo.fromMap(maps[index]);
+    });
   }
 
   @override
