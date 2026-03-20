@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tt_flutter_portfolio/models/todo.dart';
-import 'package:tt_flutter_portfolio/services/datasource.dart';
+import './datasource.dart';
 
 class HiveDatasource implements IDataSource {
   Future initialise() async {
@@ -31,7 +31,7 @@ class HiveDatasource implements IDataSource {
 
   @override
   Future<bool> delete(Todo todo) async {
-    final box = Hive.box<Todo>('todos');
+    Box<Todo> box = Hive.box('todos');
     await box.delete(todo.id);
     return true;
   }
@@ -43,9 +43,9 @@ class HiveDatasource implements IDataSource {
   }
 
   @override
-  Future<bool> read(Todo todo) {
+  Future<bool> read(Todo todo) async {
     final box = Hive.box<Todo>('todos');
     final result = box.get(int.parse(todo.id));
-    return result != null;
+    return true;
   }
 }
