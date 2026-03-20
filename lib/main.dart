@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tt_flutter_portfolio/models/todo_list.dart';
 import 'package:get/get.dart';
 import 'package:tt_flutter_portfolio/services/sql_datasource.dart';
 
@@ -58,11 +57,14 @@ class _TodoHomePageState extends State<TodoHomePage> {
       body: Center(
         child: Consumer<TodoList>(
           builder: (BuildContext context, TodoList stateObject, Widget? child) {
-            return ListView.builder(
-              itemCount: stateObject.todos.length,
-              itemBuilder: (context, index) {
-                return TodoWidget(todo: stateObject.todos[index]);
-              },
+            return RefreshIndicator(
+              onRefresh: stateObject.refresh,
+              child: ListView.builder(
+                itemCount: stateObject.todos.length,
+                itemBuilder: (context, index) {
+                  return TodoWidget(todo: stateObject.todos[index]);
+                },
+              ),
             );
           },
         ),
