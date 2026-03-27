@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import 'package:tt_flutter_portfolio/services/api_datasource.dart';
 import 'package:tt_flutter_portfolio/services/hive_datasource.dart';
 // import 'package:tt_flutter_portfolio/services/sql_datasource.dart';
 
@@ -11,7 +12,7 @@ import './models/todo.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Get.putAsync<IDataSource>(() => HiveDatasource.createAsync()).whenComplete(
+  Get.putAsync<IDataSource>(() => ApiDatasource.createAsync()).whenComplete(
     () => runApp(
       ChangeNotifierProvider(
         create: (context) => TodoList(),

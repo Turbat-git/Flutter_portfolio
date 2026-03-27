@@ -75,7 +75,7 @@ class TodoAdapter extends TypeAdapter<Todo> {
   }
 
   @override
-  // TODO: implement typeId
+  // TODO: fix this magic number
   int get typeId => 0;
 
   @override
