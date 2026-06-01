@@ -65,7 +65,7 @@ class ApiDatasource implements IDataSource {
   }
 
   @override
-  Future<Todo> read(Todo todo) async {
+  Future<bool> read(Todo todo) async {
     // DataSnapshot snapshot = await _database.ref('todos/${todo.id}').get();
 
     // if (!snapshot.exists) {

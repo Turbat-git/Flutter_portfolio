@@ -55,6 +55,32 @@ class _TodoHomePageState extends State<TodoHomePage> {
       appBar: AppBar(
         title: Text('My Fancy Todo App'),
         backgroundColor: Theme.of(context).primaryColorLight,
+        actions: [
+          Builder(
+            builder: (context) {
+              // CHANGED: listen is set to true so the counter updates dynamically
+              final todoList = Provider.of<TodoList>(context, listen: true);
+
+              // Use the .where() filter as requested
+              final incompleteCount = todoList.todos
+                  .where((todo) => !todo.complete)
+                  .length;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Center(
+                  child: Text(
+                    'Incomplete: $incompleteCount',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Consumer<TodoList>(
