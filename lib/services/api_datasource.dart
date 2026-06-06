@@ -21,60 +21,62 @@ class ApiDatasource implements IDataSource {
     return datasource;
   }
 
+  // --- BREAD OPERATIONS ---
+
   @override
   Future<bool> add(Todo todo) async {
     DatabaseReference newTodoRef = _database.ref('todos').push();
+
+    // Uses copyWith to safely inject the newly generated Firebase key
     await newTodoRef.set(todo.copyWith(id: newTodoRef.key).toMap());
     return true;
   }
 
   @override
   Future<List<Todo>> browse() async {
-    // DatabaseReference ref = _database.ref();
-    // final DataSnapshot snapshot = await ref.child('todos').get();
-
     final DataSnapshot snapshot = await _database.ref('todos').get();
 
     if (!snapshot.exists) {
-      throw Exception(
-        'Invalid Request - Cannot find Snapshot ${snapshot.ref.path}',
-      );
+      // Returning an empty list is generally safer than throwing an exception
+      // if the database is just empty.
+      return [];
     }
 
-    List<Todo> todos = <Todo>[];
-    (snapshot.value as Map).values
+    // Fixed: Assigned the mapped data to the 'todos' list variable
+    // instead of letting the mapped result float unassigned.
+    List<Todo> todos = (snapshot.value as Map).values
         .map((e) => Map<String, dynamic>.from(e))
         .map((e) => Todo.fromMap(e))
         .toList();
 
-    //TODO: Fix this to return actual data from the snapshot.
-    return [];
+    return todos;
   }
 
   @override
-  Future<bool> delete(Todo todo) async {
-    await _database.ref('todos/${todo.id}').remove();
+  Future<Todo?> read(Todo todo) async {
+    // Standardized to take an ID string and return the actual Todo object
+    final DataSnapshot snapshot = await _database.ref('todos/${todo.id}').get();
 
+    if (!snapshot.exists) {
+      return null;
+    }
+
+    // Safely cast the snapshot value and pass it to your factory
+    final map = Map<String, dynamic>.from(snapshot.value as Map);
+    return Todo.fromMap(map);
+  }
+
+  @override
+  Future<bool> edit(Todo todo) async {
+    // Uses .update() so it only overwrites the fields provided in the map
+    await _database.ref('todos/${todo.id}').update(todo.toMap());
     return true;
   }
 
   @override
-  Future<bool> edit(Todo todo) {
-    // TODO: implement edit
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> read(Todo todo) async {
-    // DataSnapshot snapshot = await _database.ref('todos/${todo.id}').get();
-
-    // if (!snapshot.exists) {
-    //   throw Exception(
-    //     'Invalid Request - Cannot find Snapshot ${snapshot.ref.path}',
-    //   );
-    // }
-
-    // return Todo.fromMap(snapshot.value as Map<String, dynamic>);
-    throw UnimplementedError();
+  Future<bool> delete(Todo todo) async {
+    // Targets the specific ID and removes the node completely
+    await _database.ref('todos/${todo.id}').remove();
+    return true;
   }
 }

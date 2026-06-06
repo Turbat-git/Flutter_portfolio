@@ -43,9 +43,9 @@ class HiveDatasource implements IDataSource {
   }
 
   @override
-  Future<bool> read(Todo todo) async {
+  Future<Todo?> read(Todo todo) async {
     final box = Hive.box<Todo>('todos');
     final result = box.get(int.parse(todo.id));
-    return true;
+    return result;
   }
 }

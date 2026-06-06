@@ -54,8 +54,7 @@ class Todo {
     complete ??= map['complete'] == 1;
 
     return Todo(
-      id: map['id']
-          .toString(), // If it is an int from the DB, convert to string
+      id: map['id'].toString(),
       name: map['name'],
       description: map['description'],
       complete: complete,
